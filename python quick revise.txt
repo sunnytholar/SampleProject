@@ -1,0 +1,364 @@
+1) Versions of R - 	dec 2018 3.5.2, march 2014 - R 3.0.3
+2) Versions  of R studio-  October 29th, 2018 (1.1.463), January 19th, 2014 (0.98.493)
+3) Versions  of Python - Python 3.7.2
+4) Versions of anaconda - 2018.12 
+5) Versions of jupyter  - 5.5.0
+6) read write:
+df = pd.read_csv('exercise.csv')
+df.to_csv('MYcsvfile.csv',index=FALSE)
+EXCEL:\
+
+pd.read_excel('Excel_Sample.xlsx',sheetname='Sheet1')
+df.to_excel('Excel_My.xlsx',sheet_name='MySheet')
+7) 
+check data structure	type(variable)
+check no of rows	df.index.values
+check column names	df.columns
+Structure of dataframe	df.info()
+Summary	df.describe()
+Head,Tail	df.head(), df.tail()
+Dimension	df.shape()
+No of rows	df.count()
+8) Table function 
+One Col : df.Age.value_counts() 
+                    df['Age'].value_counts()
+Between 2 cols   :  pd.crosstab(index=df.Age, columns=df.Gender)
+                                      pd.crosstab(index=df['Age'], columns=df['Gender'])
+9) df.isnull().sum()
+10)
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+11)Python SQL connect
+Import pyodbc
+Connection = pyodbc.connect("Driver={ODBC Driver 13 for SQL Server};"
+"Server=write server name here;"
+"Database=database name here;"
+"Authentication = ActiveDirectoryIntegrated;"
+"TrustServerCertificate=yes:"
+"Encrypt =yes;"
+"PORT=1433")
+11)Row access:
+df.loc['W'] ...selecting rows on basis of row name
+df.iloc[2]  ...selecting rows on basis of row index
+row and col acces:
+df.loc['w','A'] .. w row and a col ...now to return subset we will pass list of row and col names df.loc[['A','B'],['W','X']]
+Conditional selection:
+if we run df > 0 it will return True and False for each value
+so if we run df[df>0] it will print matrix whevr its greater then 0 it will print value else it will print NaN if condition doesnt matches
+now df['w'] > 0 will return Ture false value for col w
+
+now to get just values for which its > 0 ,  df[df['W'] > 0]  .. now it will not return NaN
+df[df['W'] > 0]['X'] now from above it will return only X col
+For multiple conditions:df[(df['W']>0) & (df['Y']< 1)]   ...here we using & instead of AND as python gets confuse when
+ we compare series of boolen with other series of boolean. And for OR we will use |
+now to reset index: 
+df.reset_index(inplace=True) .. it will create index as 0,1,2 and make actual  index as new col with name index
+Shortcut method to create a list : newind = 'CA NA WY OR CO'.split()
+now to add new col : df['States'] = newind
+now to set index : df.set_index('States')  ,, now it wil movew new col states created  to index
+10) most frequent pandas function:
+pd.read_csv
+pd.read_excel
+df.to_csv
+df.to_excel
+map & lambda (Map property applies changes to every element of a column.)
+df.Age.value_counts
+df.crosstab
+split
+df.groupby('Age').sum()
+merge
+pd.DataFrame
+pd.isnull()
+df.dropna() | Drop all rows that contain null values
+df.dropna(axis=1) | Drop all columns that contain null values
+df.fillna(x) | Replace all null values with x
+df[(df[col] > 0.5) & (df[col] < 0.7)] | Rows where 0.7 > col > 0.5
+df.sort_values(col1) | Sort values by col1 in ascending order
+df.sort_values(col2,ascending=False) | Sort values by col2 in descending order
+df.sort_values([col1,col2],ascending=[True,False]) | Sort values by col1 in ascending order then col2 in descending order
+df.apply(np.mean) | Apply the function np.mean() across each column
+nf.apply(np.max,axis=1) | Apply the function np.max() across each row
+df1.append(df2) | Add the rows in df1 to the end of df2 (columns should be identical)
+pd.concat([df1, df2],axis=1) | Add the columns in df1 to the end of df2 (rows should be identical)
+df1.join(df2,on=col1,how='inner')
+11)Linear Regression:
+To impute missing values:
+dataset.fillna(dataset.mean(), inplace=True)
+To divide into train & test:
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+lm.fit(X_train,y_train)
+predictions = lm.predict( X_test)
+Calculate MSE:
+from sklearn import metrics
+print('MAE:', metrics.mean_absolute_error(y_test, predictions))
+print('MSE:', metrics.mean_squared_error(y_test, predictions))
+print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, predictions)))
+To find coefficient value:
+lm.coef_
+lreg.score(x_cv,y_cv)
+12) Logistic Regression:
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+print(classification_report(y_test,predictions))
+step16: to get confusion matrix
+from sklearn.metrics import confusion_matrix
+confusion_matrix(y_test,predictions)
+13) 
+Decision Trees:
+from sklearn.tree import DecisionTreeClassifier
+dtree = DecisionTreeClassifier((criterion='gini'))
+dtree.fit(X_train,y_train)
+predictions = dtree.predict(X_test)
+Random Forest:
+from sklearn.ensemble import RandomForestClassifier
+rfc = RandomForestClassifier(n_estimators=600)
+rfc.fit(X_train,y_train)
+from sklearn.metrics import roc_auc_score
+roc_auc_score(y,model.oob_prediction)
+model = RandomForestRegressor(n_estimator = 200, oob_score = TRUE, n_jobs = -1,random_state =50,     
+                                    max_features = "auto", min_samples_leaf = leaf_size)
+14)Feature Selection:
+Univariate Selection - Statistical tests can be used to select those features that have the strongest relationship with the output variable.
+The scikit-learn library provides the SelectKBest class that can be used with a suite of different statistical tests to select a specific number of features.
+chi-squared (chi²) statistical test 
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+#apply SelectKBest class to extract top 10 best features
+bestfeatures = SelectKBest(score_func=chi2, k=10)
+fit = bestfeatures.fit(X,y)
+- Use inbuild class - model.feature_importances_
+- correlation & find correlation & correlation plot
+ fs.identify_collinear(correlation_threshold = 0.98)
+ fs.plot_collinear() - heatmap
+- Near Zero Variance OR Single Unique Value Features
+A feature with only one unique value cannot be useful for machine learning because this feature has zero variance. 
+ For example, a tree-based model can never make a split on a feature with only one value (since there are no groups to divide the observations into).
+ fs.identify_single_unique()
+ Also selector = VarianceThreshold()
+>>> selector.fit_transform(X)
+- Recursive Feature Elimination- Step function
+The Recursive Feature Elimination (or RFE) works by recursively removing attributes and building a model on those attributes that remain.
+It uses the model accuracy to identify which attributes (and combination of attributes) contribute the most to predicting the target attribute.
+from sklearn.feature_selection import RFE
+rfe = RFE(model, 3)
+Here 3 means choose top  3 variable
+ - ROC Curve:
+ import scikitplot as skplt
+import matplotlib.pyplot as plt
+y_true = # ground truth labels
+y_probas = # predicted probabilities generated by sklearn classifier
+skplt.metrics.plot_roc_curve(y_true, y_probas)
+plt.show()
+ - accuracy = accuracy_score(y_test, predictions)
+ print 'Accuracy:', accuracy_score(y_test, weighted_prediction)
+print 'F1 score:', f1_score(y_test, weighted_prediction,average='weighted')
+print 'Recall:', recall_score(y_test, weighted_prediction,
+                              average='weighted')
+print 'Precision:', precision_score(y_test, weighted_prediction,
+                                    average='weighted')
+- IV ...write a function or do it using excel
+15)
+from sklearn.model_selection import cross_val_score
+clf = svm.SVC(kernel='linear', C=1)
+scores = cross_val_score(clf, iris.data, iris.target, cv=5)
+16) FOr IV:
+final_iv, IV = data_vars(df , df.target)
+17)One-Hot Encoding
+created dummy variables for categorical variables
+features = pd.get_dummies(features)	
+https://github.com/scikit-learn/scikit-learn/issues/6086
+18)import os
+os.getcwd()
+os.chdir('C:\\Users\\sunny\\Documents')
+					
+
+Data Manipulation:
+1) To filter
+df  = df[(df['col1'] > 25 )]
+2) To assing a new variable
+df.assign
+3) To sort:
+df.sort_values
+4) To run python script:
+%run filename.py
+5) How	to get rows whose col name contains word chile
+df  = df[df['col'].str.contains('chile')]
+6) How to get rows whose col name end with  Chile or Japan or Indonesia
+countries = ['Chile$','Japan$','Indonesia$']
+NOTE : Here $ meand word chile should ne at the end
+df = df[(df['col'].str.contains('|'.join(countries))) & (df['col2'] > 7.5 ) ]
+7) How to extract just year and create new variable form dates 2016-03-02
+df = df.assign(year = df['time']].str[:4])
+Here str[:4]  help us  to get just 4 characters i,e 2016 from 2016-03-02
+8) Query method:
+It is used to subset the variables and rows but it is very fast than the ordarniary method
+Its under library  numexpr
+df.query('a > 5')
+df.query('col1 < 50 and col2 >20')
+NOTE : df.query doesnt support str.contains
+9) Group by department and get sum of all categories
+df.groupby('department').agg({'categories' : 'sum'})
+10) group by department and find sum of product sold in each department and find top 5 department
+grouped_dep = df.groupby('dept')
+print("\n Number of unique department : " +str(len(grouped_der)))
+print grouped_dep.agg({'purchasequantity':'sum'})[0:5]
+11) Now see how to group by department and categories both
+multi_group = df.groupby(['dep','categories'])
+multi_group.agg({'purchasequantity' : 'sum'})[0:5]
+12)Now find in each category what is average purchase amount
+multi_group.agg({'purchasequantity' : 'sum','purchasedamount'  : 'mean'})[0:5]
+13) Now see how to rename the column to give  more appropriate name
+multi_group.agg({'purchasequantity' : 'sum','purchasedamount'  : 'mean'}).rename(columns = {'purchasequantity' : 'total quantity','purchasedamount':'Mean Amount'})[0:5]
+14) Hierarchical Indexing:
+Also referred as multi level indexing. It enables effective storing and manipulation of high  dimension data in a 2 dimensional tabular structure
+For eg  in below group by instead of 4 column we see just 2 columns  in number of dimensions
+we can use function  df.ndim to find number of columns
+so such dataset obtaines using hierarchical indexing may not be in the desired format for further use
+To remove this we use reset_index() function
+so do as 
+df_output = multi_group.agg({'purchasequantity' : 'sum','purchasedamount'  : 'mean'}).rename(columns = {'purchasequantity' : 'total quantity','purchasedamount':'Mean Amount'})[0:5]
+df_output.reset_index()
+15)When we read csv file and it has date as columns so to load it as data in python what can we use?
+we need to use keyword parse_dates = TRUE in pd.read_csv function
+Also we can write parse_dates = ['colname'] if we want to specify the column names
+Also use infer_datetime_format = TRUE which increases the speed of  conversion of string to date 
+df.dtypes to check data type
+16) To convert to datatime
+use to_datetime function
+pandas.to_datetime(df['colname'],format = '%m/%d/%Y',infer_datetime_format = TRUE)
+17) which function to use to get day, month , year and  so on from date fields
+strftime
+18) Extracting month and weekday from event date
+import datetime as dt
+df['Weekday'] = df[['EventDate']].apply(lambda x : dt.datetime.strftime(x['EventDate'],"%A"),axis = 1)
+df['Month'] = df[['EventDate']].apply(lambda x : dt.datetime.strftime(x['EventDate'],"%B"),axis = 1)
+df.groupby('Month').agg({'AccidentNumber' : 'count'})
+19) To calculate mean excluding na values
+df['col'].fillna(np.nanmean(df['colname']),inplace = TRUE)
+20) To impute by mode
+import  scipy.stats import mode
+df['col'].fillna(mode(df['col'],nan_policy = 'omit').mode[0], inplace = TRUE)
+NOTE - Here mode[0] is actual  mode value and mode[1] means number of time it repeats
+21) Reshaping of data
+By default what we use is long format.To move the data from long format to wide format we can use pivot function
+df.pivot(index = 'index',columns = 'columns',values = 'value')
+eg : df.pivot(index = 'country',columns = 'year_temp',values = 'AverageTemp')
+22) To move  back the data from  wideformat to long format:
+we will use function unstack which unpivots a dataframe  from wide format to long format by removing hierarchical indexing on the labels
+df.unstack().reset_index('year_temp')
+23) How to convert amount present in string to number for eg convert $2400 to 2400
+pd.to_numeric(df['SalesAmount'].str.replace(r'[$,]',''))
+24) How to combine 2  columns Prouct with Category 
+df['combinecol']   = df.col1.astype(str)+"-"+df.col2.astype(str)
+25)Merge 2 df:
+pd.merge(df1,df2,how='inner',left_on = 'SectionId',right_on = 'ClassId')
+26)Join:
+pd.DataFrame.join(df1,df2,lsuffix = '_left',rsuffix = '_right')
+merge is better when we are joining on 2 columns
+27) String Manipulation - To replace character
+df.income.str.replace("Rs","")
+28)To remove left and  right side of each string
+df.str.strip()
+29) To check is all  charcter is number
+pd.to_numeric(df['income'])
+30) Regular expressions:
+^ - negates the expression
+A-Za-z0-9 - All uppercase , lower case alphabets and digits
++ - Matches when pattern occurs for one or more  time
+31)Replace if one or more occurence of special charcter other than numbers and alphabets
+str.replace(r'[^A-Za-z0-9,]+','')
+32) Ploting in python:
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+33) to create blank  plot:
+#To create blank plot
+fig = plt.figure()
+plt.show()
+34) For simple scatter plot:
+plt.plot([1,2,3,4],[5,6,7,8])
+plt.show()
+35) For creating plots in rows or columns like using par and mfrow what can be used in python?
+We can  use subplot
+fig = plt.figure(figsize = (15,10))
+xData = np.linspace(0,90)
+yData1 = np.sin(xData)
+yData2 = np.cos(xData)
+yData3 = np.tan(xData)
+plt.subplot(311) # 311 means 3 rows , 1 column and subplot 1 - stands for firstplot
+plt.plot(xData,yData1)
+plt.title("Sine Curve")
+plt.subplot(312) 
+plt.plot(xData,yData2)
+plt.title("Cos Curve")
+plt.subplot(313) 
+plt.plot(xData,yData3)
+plt.title("Tan Curve")
+plt.savefig('maths_func.pdf')
+plt.show()
+36)Drawback of matplotlib
+Incompatibility in using with pandas dataframe
+A dataframe cannot be directly visualised using matplotlib
+Each series in the dataframe has to be extracted
+Then join further.Also lot of codes is required
+Seaborn is build on top of matplotlib and overcomes this drawback and widely used
+It is compliment to matplotlib not replacement
+For drawing simpler plots matplotlib is invoked  even while using seaborn
+37) How to install seaborn:
+conda install -c anaconda seaborn = 0.7.1 or install by using pip install
+38) Univariate analysis on non categorical data i.e  numerical data
+import seaborn as sns
+39) Generate Kernel Density estimate plot for salary
+sns.kdeplot(df['Salary'],shaded = True)
+sns.plt.show()
+40)Generate rug plot
+sns.rugplot(df['salary'],shaded = True)
+41) Generate distribution plot which can have both kde and rug plot
+sns.distplot(df['Salary'],kde = True, rug = True)
+sns.plt.show()
+42) Bivariate analysis using seaborn
+sns.jointplot(x = 'Salary',y='AmountSpent',data = df,kind = 'scatter')
+sns.plt.show()
+#Also we can change  the kind to other plots like kind = 'hex' for hexagon 
+43) Other way to include conditional attributes
+sns.lmplot(x = 'Salary',y='AmountSpent',hue = 'ownhome',col = 'Age',markers = ["o","x"],data = df)
+sns.plt.show()
+Note - We can also use parameter row = 'somecolumnname' to see different plots row wise
+44) Let see how to seaborn for categorical variable analysis
+sns.countplot(x = 'children',hue='Age',data =  df,palette = 'Set2')
+sns.plt.show()
+45)Analysis using barplot
+sns.barplot(x = 'Age',y='Salary',data = df)
+sns.plt.show()
+46) include more variable in barplot
+sns.barplot(x = 'Age',y='Gender',hue = 'Married',orient = 'h',data = df)
+Here orient is nothing but orientation and h means horizontal
+47)Boxplot
+sns.boxplot(x='ownhome',y='salary',hue = 'married',data = df,palette = 'Set3')
+sns.plt.show()
+48)Controlling parameters
+sns.plt.title("Title here",fontsize = 15)
+sns.plt.xlabel("X label",fontsize = 12)
+sns.plt.ylabel("Y label",fontsize = 12)
+sns.plt.xlim(-1000,10000)
+sns.plt.ylim(-2000,4000)
+49) We do have ggplot in python same like ggplot2 in R 
+refer last 2 videos for this
+
+
+
+
+
+
+
+
+
+
+
+
+			

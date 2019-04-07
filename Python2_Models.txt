@@ -1,0 +1,365 @@
+https://www.youtube.com/watch?v=r0s4slGHwzE&index=1&list=PLeo1K3hjS3uvMADnFjV1yg6E5nVU4kOob
+
+1) Linear Regression:
+We need to create a modeo to predict housing prices based on existing features.
+step1: import all libraries:
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+step2 : read data from csv file:
+df = pd.read_csv("USA_Housing.csv")  .. in R read.csv("USA_Housing.csv")
+df.head()  ..... in R head(df)		
+df.info() .. in R str(df) 
+df.describe() ... in R summary(df)
+df.columns .. in R names(df) or col.names(df)
+step3 : Now lets draw some simple plot to check data.It will create histogram as well as correlation scatter plot for all the variables
+sns.pairplot(df)
+Now check distrubution plot of target col:
+sns.distplot(df['Price'])
+we see data is normally distributes thats very nice
+Now check heatmap of the correlation:
+sns.heatmap(df.corr(),annot=True) .. here annot is used to display no in graph
+step4 : we will divide data into x and y col.we will noot use address col as its text col
+x = df[['Avg.AreaIncome'....place here all cols]] ..dont put price col which should go in y and address as it is text
+y = df['Price']
+step5 : Now divide the data into test and train. we will use sikat learn to use this
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.4,random_state=101)
+here random_state is similiar to set.seed(101) in R
+step5:Now to create linearm regression model:
+from sklearn.linear_model import LinearRegresssion
+lm = LinearRegression()
+lm.fit(X_train,y_train)
+step6 : Now evaluate linear model which we have build
+check intercepts:
+print(lm.intercept_)
+check coeefienct of each features:
+lm.coef_ .. it shows an array of coefficient value for each variable
+X_train.columns   ... it will display all the columns
+cdf = pd.DataFrame(lm.coef_,X.columns,columns=['Coeff'])
+now cdf will display coefficient value against each feature in a systematic way in tabular format.
+step7: now to do predictions on test data:
+predictions = lm.predict(X_test)
+predictions : it wil show the the predicted price of house
+Now we can draw a scatter plot to see how different it is from actual price:
+plt.scatter(y_test,predictions) 
+as we see its perfectly a straight line that means it is linear
+Now draw a histogram of distributions of residuals:
+sns.distplot((y_test-predictions))
+so we see it is normally distributed
+step8:  now lets see regression evaluation metrics.There are 3 types of regression evaluation metrics:
+Mean Absolute Error(MAE) is the mean of the absolute value of the errors
+Mean Squared Error(MSE) is the mean of the squared errors
+Root Mean Squared Error(RMSE)  is the square root of the mean of the squared errors
+from sklearn import metrics
+metrics.mean_absolute_error(y_test,predictions)
+metrics.mean_squared_error(y_test,predictions)
+np.sqrt(metrics.mean_squared_error(y_test,predictions))
+step9 : next is Rsquare how much variance in y is explained by model
+metrics.explained_variance_Score(y_test,predictions)
+It should be as high as possible
+=========================Logistic Regression ==============
+step1: import all packages
+train = pd.read_csv('titanic_train.csv')
+sns.heatmap(train.isnull(),yticklabels=False,cbar=False,cmap='viridis')
+here train.isnull() .. it will return false where there is no na and true where there is NA
+step2: now check count of survival versus not survival
+sns.countplot(x='Survived',data=train)
+now we will see count on basis of sex:
+sns.countplot(x='Survived',hue='Sex',data=train,palette='RdBu_r')   ...here palette  is colour
+now continue exploring instead of hue= Sex use passenger class i.e hue = 'Pclass' and analyse the plot
+step3:now check the distribution of age:
+sns.distplot(train['Age'],dropna(),kde=False,bins=30) OR same can be plot as .. train['Age'].plot.hist(bins=30)
+now continue analysing other columns countplot for col  like no of siblings,fare and so on
+step4  :now check some interactive visualisations using cufflinks
+import cufflinks as cf
+cf.go_offline()
+train['Fare'].iplot(kind='hist',bins=50)
+step5: now we will impute missing values for age.so 1 way is to impute average value of non NA cols.but better way is to find  small group.lets find average age by
+class
+plt.figure(figsize=(10,7))
+sns.boxplot(x='Pclass',y='Age',data=train)
+step5: so to impute we will write a function as:
+def impute_age(cols):
+  Age = cols[0]
+  Pclass = cols[1]
+  
+  if pd.isnull(Age):
+     if Pclass == 1:
+       return 37
+     elif Pclass ==2:  
+       return 29
+     else :
+       return 24
+  else:
+     return Age
+Now call the function as: train['Age'] = train[['Age','Pclass']].apply(impute_age,axis=1)
+step6:
+now go and check heatmap again:
+sns.heatmap(train.isnull(),yticklabels=False,cbar=False,cmap='viridis')
+step7:now in cabin col we have lot of missing values so its better to drop that col:
+train.drop('Cabin',axis=1,inplace=True)
+step8: create dummy variable for categorical variable:
+sex = pd.get_dummies(train['Sex'],drop_first=True)  .. it means we will drop female col as male 0 or 1 gives answer what will be female.Hence of no use
+now do same for another col embark:
+embark=pd.get_dummies(train['Embarked'],drop_first=True)
+step9: now add dummy cols created:
+train = pd.concat([train,sex,embark],axis=1)
+step10: now drop cols which we not going to use in our modeling:
+train.drop(['Sex','Embarked','Name','Ticket'],axis=1,inplace=True)
+step11: now passenger id is also of no use , so eventhough numeric no use so we will drop
+train.drop('PassengerId',axis=1,inplace=True)
+step12: now to divide train data into train and test:
+X = train.drop('Survived',axis=1)
+y = train['Survived']
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=101)
+step 13 : now run logistic model
+from sklearn.linear_model import LogisticRegression
+logmodel = LogisticRegression()
+logmodel.fit(X_train,y_train)
+step14: now do some prediction using test data:
+predictions = logmodel.predict(X_test)
+step15: now we will evaluate our model:
+from sklearn.metrics import classification_report
+print(classification_report(y_test,predictions))
+step16: to get confusion matrix
+from sklearn.metrics import confusion_matrix
+confusion_matrix(y_test,predictions)
+==============================================KNN THEORY=======================================================================
+1) Knn = k Nearest Neighbors : this algorithm is used for classification problems
+2) Case Study:
+Step1: read data as df = pd.read_csv('Classified Data',index_col=0)
+Step2: Now in KNN its very essential all the cols should be on same scale.
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(df,drop('TARGET CLASS',axis=1)
+scaled_features = scaler.transform(df.drop('TARGET CLASS',axis=1))
+step3: output of step2 is array so we will create a dataframe
+df_feat = pd.DataFrame(scaled_features,columns=df.columns[:-1])   ...here -1 as we dont want last col which is Target Class which cant 
+step4: now divide into train test
+X = df_feat
+y = df['TARGET CLASS']
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=101)
+step5: now run KNN model
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=1)
+knn.fit(X_train,y_train)
+pred = knn.predict(X_test)
+step6: now evaluate
+from sklearn.metrics import classification_report,confusion_matrix
+print(confusion_matrix(y_test,pred))
+print(classification_report(y_test,pred))
+its predicting very good with just k value 1 but we can also use another k value and check if it is further more accurate
+step7: Use elbow method to choose the correct value of K:
+error_rate = []
+for i in range(1,40):
+   knn = KNeighborsClassifier(n_neighbors=i)
+   knn.fit(X_train,y_train)
+   pred_i = knn.predict(X_test)
+   error_rate.append(np.mean(pred_i != y_test))
+step8: Now plot the error rate flag to identify k values:
+plt.figure(figsize=(10,6))
+plt.plot(range(1,40),error_rate,color='blue',linestyle='dashed',marker='o',markerfacecolor='red',markersize=10)
+plt.title('Error Rate vs K Value')
+plt.xlabel('K')
+plt.ylabel('Error Rate')
+now repeat with K = 17 and we will see the difference when compared with original classification report and confusion matrix.
+====================================Decision Trees and Random Forest===============
+1) Entropy and informaton gain are the mathematical methods of choosing the best spit
+2) Case study:
+step1 : import all libraries
+step2 : Import data sets
+df = pd.read_csv('Kyphosis.csv')
+df.head()
+step3: now do a small data exploration
+df.info()
+sns.pairplot(df,hue='Kyphosis') ..here kyphosis is our target col
+step3 : do train test split
+X = df.drop('Kyphosis',axis=1)
+y = df['Kyphosis']
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=101)
+step4: create decision trees:
+from sklearn.tree import DecisionTreeClassifier
+dtree = DecisionTreeClassifier()
+dtree.fit(X_train,y_train)
+step5: now we will go ahead and evaluate how well our decision tree was able to predict based off of these columns
+predictions = dtree.predict(X_test)
+from sklearn.metrics import classification_report,confusion_matrix
+print(confusion_matrix(y_test,predictions))
+print('\n')
+print(classification_report(y_test,predictions))
+now we see percentage are just ok 
+step6: now check same with random forest
+from sklearn.ensemble import RandomForestClassifier
+rfc = RandomForestClassifier(n_estimators=200)
+rfc.fit(X_train,y_train)
+rfc_pred = rfc.predict(X_test)
+from sklearn.metrics import classification_report,confusion_matrix
+print(confusion_matrix(y_test,rfc_pred))
+print('\n')
+print(classification_report(y_test,rfc_pred))
+so we see from reports random forest perform better then decision trees
+NOW TO VISUALIZE DECISION TREE WE CAN CHECK THE NOTES SEPERATELY NOT REQUIRED AT THAT MOMENT
+=================================Principal Component Analysis=========================
+IN PCA we mostly try to get rid of the variables/components that dont explain that much the variance in your data
+step1: import libraries
+step2: we going to work on cancer data set because it has a ton of features and is great use case for PCA
+we can get this data set directly from sklearn
+from sklearn.datasets import load_breast_cancer
+cancer = load_breast_cancer()
+now to check details
+cancer.keys()
+print(cance['DESCR']) .. it will give details of dataset
+step3: now convert to data frame using pandas
+df = pd.DataFrame(cancer['data'],columns=cancer['feature_names'])
+df.head()
+step4:  now we wil scale the data and then use PCA
+from sklearn.preprocesssing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(df)
+scaled_data = scaler.transform(df)
+step5: Now do actual PCA
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+I am going to now visualize the entire three dimensional data set just by using two principal components
+pca.fit(scaled_data)
+x_pca = pca.transform(scaled_data)
+scaled_data.shape  .. it will show 569 rows and 30 colums
+x_pca.shape ... this is what we now transformed and it will have 569 rows and just 2 columns
+now as we have converted from 30 cols to 2 cols we can plot it 
+plt.figure(figsize=(8,6))
+plt.scatter(x_pca[:,0],x_pca[:,1],c=cancer['target'],cmap='plasma')  .. grab all rows from col 0 and col 1... c is color and cmap is colour mapping
+plt.xlabel('First Principle Components')
+plt.ylabel('Second Principle Components')
+So now it gives clear differentiation betwen 2 diff types of cancer in just 2 columns instead of 30 columns
+Now to imp note is here 2 cols are not  1 to 1 cols.It is basically combinations of features and is stored as array
+if we check pca.components_ it will shows an array , to visualize it we can use heat maps
+df_comp = pd.DataFrame(pca.components_,columns=cancer['feature_names'])
+plt.figure(figsize=(12,6))
+sns.heatmap(df_comp,cmap='plasma')
+now we have a heat map which shows the relationship between the correlation of various features and the principal components themselves
+so now we will use x_pca instead of using actual data set in linear , logistic model and so on
+==============K means clustering============
+1) It is a unsupervised machine learning algorithm
+SSE :
+It is defined as the sum of squared distance between each member of the cluster and its centroid
+It should decrease with increase in K
+2) Case study:
+step1: import libraries
+step2: now to make artifical data
+from sklearn.datasets import make_blobs
+data = make_blobs(n_samples=200,n_features=2,centers=4,cluster_std=1.8,random_state=101)
+step3: we have 4 blobs so lets plot it to see what it actually doing
+plt.scatter(data[0][:,0],data[0][:,1],c=data[1],cmap='rainbow')
+step4:
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=4)
+kmeans.fit(data[0])
+step5: to see clusters centers
+kmeans.cluster_centers_
+to check labels kmeans.labels_
+step6: now create subplot :
+fig, (ax1,ax2) = plt.subplots(1,2,sharey=True,figsize=(10,6))
+ax1.set_title('K Means')
+ax1.scatter(data[0][:,0],data[0][:,1],c=kmeans.labels_,cmap='rainbow')
+ax2.set_title('Original')
+ax2.scatter(data[0][:,0],data[0][:,1],c=data[1],cmap='rainbow')
+3) Project:
+For this project we will attemp to use KMeans clustering to cluster  universities into two groups private and public.
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

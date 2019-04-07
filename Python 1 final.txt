@@ -1,0 +1,297 @@
+1)How to change data type of variable after reading file
+drinks['beer_servings'] = drinks.beer_servings.astype(float)
+2) How to change data type of variable before reading file
+drinks = pd.read_csv(url, dtype={'beer_servings':float})
+3) Change data type of categorical variable to factor:
+df['Gender'] = df['Gender'].astype('category')
+
+
+
+
+1)from datetime import datetime
+now =  datetime.now()
+current_year = now.year
+current_month = now.month
+current_day = now.day
+2) To take input from user?
+name = raw_input("What is your name?")
+3) How to find square root without using numpy function?
+import math
+print math.sqrt(25)  
+4)To pass multiple parameter in function and get 1 output?
+def biggest_number(*args):
+    print max(args)
+    return max(args)
+biggest_number(-10, -5, 5, 10)	
+5) To find index of list?
+print dataframename.index("value name")
+6)New Key can be added and deleted in the dictonary as below:
+dict_name[new_key] = new_value
+Toremove : del dict_name[key_name]
+7) To remove from list :
+beatles = ["john","paul","george","ringo","stuart"]
+beatles.remove("stuart")
+8)To create continuation of lines?
+return 0.9 * average(cost["apples"]) + \
+0.1 * average(cost["bananas"])
+9) How to print list inside list:
+list_of_lists = [[1,2,3], [4,5,6]]
+for lst in list_of_lists:
+    for item in lst:
+        print item
+10) How to combine the string items in the list.
+ letters = ['a', 'b', 'c', 'd']
+print " ".join(letters)
+print "---".join(letters)
+o/p :
+a b c d
+a---b---c---d
+11) what  can be used to print index of list and value together as :
+enumerate can be used to print index of list and value together as
+choices = ['pizza', 'pasta', 'salad', 'nachos']
+print 'Your choices are:'
+for index, item in enumerate(choices):
+    print index, item
+12)what can be used to join 2 lists?
+Zip can be  used to join 2 or more lists:
+list_a = [3, 9, 17, 15, 19]
+list_b = [2, 4, 8, 10, 30]
+for a, b in zip(list_a, list_b):
+	print(a)
+	print(b)
+13)How to find key , values and  complete items from dictonary
+d.keys()
+d.values()
+d.items()
+14)To print only list of even numbers:
+evens_to_50 = [i for i in range(51) if i % 2 == 0]
+15) To reverse the  list:
+letters = ['A', 'B', 'C', 'D', 'E']
+print letters[::-1]
+In the example above, we print out ['E', 'D', 'C', 'B', 'A']
+16) Read - write text file:
+4 things read, write ,read write and append
+f = open("output.txt", "w")
+for item in my_list:
+    f.write(item + "\n")
+f.close()
+17) Way to close file without writing close:with...as
+Note that we don't explicitly close() our file, and remember that if we don't close a file, our data will get stuck in the buffer
+with open("text.txt", "w") as textfile:
+	textfile.write("Success!")
+18)How to check whether files are open or not?
+Python file objects have a closed attribute which is True when the file is closed and False otherwise.
+f = open("bg.txt")
+f.closed
+19) # to remove the duplicates
+hivedd = []
+for x in hivelist:
+    if x  not in  hivedd:
+        hivedd.append(x)
+20)For loop for dictonary
+for loop for dictionary:
+states = {'VT':'Vermont','ME':'Maine'}
+for key,value in states.items():
+    print '%s : %s' % (key,value)
+21)To find count by sex:
+tips.groupby('sex').size()
+Notice that in the pandas code we used size() and not count(). This is because count() applies the function to each column, returning the number of not null records within each.
+Alternatively, we could have applied the count() method to an individual column:
+tips.groupby('sex')['total_bill'].count()
+22) Group by 2 columns and show average and count,
+tips.groupby(['smoker', 'day']).agg({'tip': [np.size, np.mean]})
+23)How  to do union  in python?
+pd.concat([df1, df2]).drop_duplicates()
+Here in python concat will work like union all so to remove duplicate entries use drop_duplicates() function
+24) To find top 10 records based on some column
+df.nlargest(10,'tip')
+25) How to find top N rows per group
+(df.assign(rn=df.sort_values(['total_bill'], ascending=False).groupby(['day']).cumcount() + 1).query('rn < 3').sort_values(['day', 'rn']))
+26) Other way to find top N rows from each group?
+(tips.assign(rnk=tips.groupby(['day'])['total_bill'].rank(method='first', ascending=False)).query('rnk < 3').sort_values(['day', 'rnk']))
+27) To change  the datatype of series:
+s2 = pd.to_numeric(s1, errors='coerce')
+Here errors = 'coerce' will change any bad values into NAN
+For eg : if we have series [1,2,3,Python,4] and we try to convert it to numeric than we should use coerce so that python gets converted to NAN
+If we dnt use errors='coerce' we will get an error ValueError: Unable to parse string "python"
+28) Suppose we have a series S1 , how to  convert it to numeric array:
+a = np.array(s1.values.tolist())
+29) Use  of stack function with series:
+check  in this link  it will  take  2 min
+https://www.w3resource.com/python-exercises/pandas/python-pandas-data-series-exercise-10.php
+30) To append data in series:
+new_s = s.append(pd.Series(['500', 'php']))
+31) To Change the order of index of a given series
+Original - s = pd.Series(data = [1,2,3,4,5], index = ['A', 'B', 'C','D','E'])
+Changed  -  s = s.reindex(index = ['B','A','C','D','E'])
+31)How to find no of rows and col of dataframe without using shape function?
+total_rows=len(df.axes[0])
+total_cols=len(df.axes[1])
+print("Number of Rows: "+str(total_rows))
+print("Number of Columns: "+str(total_cols))
+Here str function returns string
+32) How to write between in python:
+df[df['score'].between(15, 20)]
+33) To add a row in existing dataframe not column:
+df.loc['k'] = [1, 'Suresh', 'yes', 15.5]
+34) How to connect to database:
+Import pyodbc
+Connection = pyodbc.connect("Driver={ODBC Driver 13 for SQL Server};"
+"Server=write server name here;"
+"Database=database name here;"
+"Authentication = ActiveDirectoryIntegrated;"
+"TrustServerCertificate=yes:"
+"Encrypt =yes;"
+"PORT=1433")
+35) To write formatted print:
+num = 12
+name = 'sunnny'
+print("my name is {} and number is {}".format(num,name))
+OR
+print("my name is {one} and number is {two}".format(one=num,two=name))
+OR 
+print("my name is %s and number is %s" % (num,name))
+36)Tuple:
+t = (1,2,3)
+Main difference is list is mutable but tuple is immutable i.e once we assign the values it cant be changed.
+37)sets : 
+It is collection of unique element.s = {1,2,3}
+It doesnt allow duplicates 
+38) In one  line multiply value of list by 3
+seq = [1,2,3,4,5]
+list(map(lambda num: num*3,seq))
+39) Use of  filter in above:
+list(filter(lambda num : num%2 == 0,seq)) o/p will be [2,4]
+40)Use of in operator:
+'x' in [1,2,3]  .. o/p will be False
+41)range function
+np.arange(0,11,2) .. start from 0 and increment by 2 upto 11
+np.zeros(3) .. it will print 1 list of three times 0
+np.zeros(5,5) .. 5*5 matrices with zero
+similarly for ones .. np.ones(3)
+42)  how to create identity matrix:
+np.eye(4)
+43) Random functions:
+from numpy.random import randn
+np.random.seed(101)
+np.random.rand(5)
+np.random.rand(5,5)
+if writen randn instead of n it will give normal distribution values
+now for random integer : np.random.randint(1,100,10) .it will print 10 integers between 1 and 100 
+44) max,min and index location of max,min
+ranarr.max(),ranarr.min(),ranarr.argmax(),ranarr.argmin()
+45) To find summary by group by column:
+df.groupby('Company').describe().tranpose() 
+46)now to apply some user defineds function on each value in series
+df['col1'].apply(lambda x : x*2)
+47) To read from HTML:
+data = pd.read_html('paste here actual web link')
+now it reads as list
+so data[0] will  give us dataframe we were looking for.Also data[0].head
+48) To find row where variable name  starts with some character?
+startswith('P')
+49)Find rows whose columns name is 102976 or 103380
+df[df["colname"].isin([102976,103380])]
+50) Create pivot table based on 2 or multiple index?
+pd.pivot_table(df,index = ['Region','SalesMan'])
+51) Find sales amount region and managerwise:
+pd.pivot_table(df,index = ["Region","Manager"], values = ["Sale_amt"],aggfunc=np.sum)
+52) Write a Pandas program to create a Pivot table and count the manager wise sale and mean value of sale amount.
+pd.pivot_table(df,index=["Manager"],values=["Sale_amt"],aggfunc=[np.mean,len])
+53)Find manager wise, salesman wise total sale and also display the sum of all sale amount at the bottom
+pd.pivot_table(df,index=["Manager","SalesMan"],values=["Units","Sale_amt"],aggfunc=[np.sum],fill_value=0,margins=True)
+54)How to apply some filter after applying pivot
+table.query('Manager == ["Douglas"]')
+Another ex:
+table = pd.pivot_table(df,index=["Region", "Item"], values="Units")
+table.query('Item == ["Television","Home Theater"]')
+55) Write a Pandas program to create a Pivot table and find survival rate by gender on various classes
+df.pivot_table('survived', index='sex', columns='class')
+56)Write a Pandas program to partition each of the passengers into four categories based on their age.
+pd.cut(df['age'], [0, 10, 30, 60, 80])
+57)Write a Pandas program to create a Pivot table and find survival rate by gender, age of the different categories 
+of various classes. Add the fare as a dimension of columns and partition fare column into 2 categories based on the values present in fare columns
+df = pd.read_csv('titanic.csv')
+fare = pd.qcut(df['fare'], 2)
+age = pd.cut(df['age'], [0, 10, 30, 60, 80])
+result = df.pivot_table('survived', index=['sex', age], columns=[fare, 'pclass'])
+Note here qcut will divide data into 2 groups
+58) How to group by 2 columns and show in a better represntation:
+df.groupby(['sex', 'class'])['survived'].mean().unstack()
+If we dont use unstack() represntation will not be that good
+59) # manually inserting duplicate of a row of row 440 
+data.loc[1001] = [data["First Name"][440], 
+                  data["Gender"][440], 
+                  data["Start Date"][440], 
+                  data["Last Login Time"][440], 
+                  data["Salary"][440], 
+                  data["Bonus %"][440], 
+                  data["Senior Management"][440], 
+                  data["Team"][440]] 
+60) How to find at which position our filter comes:
+np.where(df['First Name'] == "Jerry")                    
+61) To read only specific columns while reading:
+parameter for achieve this is : usecols= ['col1','col2']
+57)Write a Pandas program to create a Pivot table and find survival rate by gender, age of the different categories of various classes. Add the fare as a dimension of columns and partition fare column into 2 categories based on the values present in fare columns
+58) To change the column names
+df.columns.values[0:8] = ["FN","CN","A3","A4","A5","A6","A7","A8"]
+59)  How to sort the columns:
+df[sorted(df.columns)]
+60) To rename or change columns:
+df.rename(columns = {'Gender' : 'GR', 'First Name' : 'FR'})
+61) To find n largest from col:
+df.nlargest(3,'Salary')
+
+
+Revision:
+DELETE DUPLICATE ROWS
+1) To delete  or remove the rows on one column:
+df.drop_duplicates(subset = "First Name", inplace = True)
+Here it will just remove  extra duplicate rows and  keep all
+2) To delete  or remove the rows on one column and only keep rows which  was not ever duplicated
+So here we will additionally use keep = False as the  keyword
+df.drop_duplicates(subset = "First Name", keep = False,inplace = True)
+Here it will just remove  extra duplicate rows and  keep all
+3) Now to delete or remove duplicate rows when  all columns are duplicate:
+df.drop_duplicates(keep = False,inplace = True)
+GROUP BY:
+1) Apply filter after group by:
+gr = df.groupby("First Name")['First Name'].count() 
+gr[gr == 1]
+2) Doing group by on 2 columns and  showing it like pivot :
+we will use unstack function for this:
+df.groupby(['First Name', 'Gender']).size().unstack()
+3) Running a loop on group by and see the data in each group by 
+for name, group in df.groupby('First Name'):
+    print(name)
+	print(group)
+    print(group["First Name"].size())
+4) Writing user defined function and apply on each group:
+def get_stats(group):
+    return {'nunique': group.nunique(), 'count': group.count()}
+df.groupby('First Name')['First Name'].apply(get_stats).unstack()
+5) Which meals were eaten on days where the average bill was greater than 20?
+df.groupby('day').filter(lambda x : x['total_bill'].mean() > 20)
+6)  we might want to compare the average party size on days where the average bill is high
+df.groupby('day').filter( lambda x : x['total_bill'].mean() > 20)['size'].mean()
+7) Transformation apply something on rows
+df.groupby('key').transform(lambda x: x - x.mean())
+8) Applying 2 aggregate function to one column:
+df.groupby(['First Name'])['First Name'].agg(['count','nunique'])
+9) Applying different agg function on different columns:
+df.groupby("First Name").agg({"Salary": 'count', "Salary": pd.Series.nunique})
+10) Group by and  then sorting:
+df.groupby("First Name").agg({"Salary": 'count', "First Name": pd.Series.nunique}).sort_values(['Salary'],ascending = False)
+11) Join on 2 diff columns:
+new_df = pd.merge(A_df, B_df,  how='left', left_on=['A_c1','c2'], right_on = ['B_c1','c2'])
+12)cross tab
+ pd.crosstab(index = df["First Name"],columns = df["Gender"])
+
+
+
+
+
+
+
+
+

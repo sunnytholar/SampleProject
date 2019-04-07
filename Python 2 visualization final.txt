@@ -1,0 +1,210 @@
+ggplot:
+
+
+
+
+
+
+=======================Python for Data Visualization Matplotlib===================================
+1) 
+import matplotlib.pyplot as plt
+%matplotlib inline   #its specific to seeing graph in jupiter notebook
+import numpy as np 
+x = np.linspace(0,5,11)
+y = x ** 2
+2) Functional Plot:
+plt.plot(x,y)
+plt.show() #use this as well if not in jupityer
+plt.xlabel("xlabel") . similary ylabel, title
+3) Multiplots on the same canvas:
+plt.subplot(1,2,1) ...here now of row,no of cols,plot no 
+plt.plot(x,y,'r')  ..here r means red colour
+plt.subplot(1,2,2)
+plt.plot(y,x,'r')
+3) Object oriented method plot:here we create object then run methods on it:
+fig = plt.figure()
+axes = fig.add_axes([0.1,0.1,0.8,0.8]) #10percent left,10percent Top,width size,height size
+axes.plot(x,y)
+axel.set_xlabel('X label') ...similarly for Y label and Title
+4) Subplots using object oriented:
+fig,axes = plt.subplots(nrows=1,ncols=2)
+Here axes is array of subplots.Basically by doing this no need to do manually plt.figure in subplots.we can also run a for loop as
+for current_ax in axes:
+  current_ax.plot(X,y)
+This will print 2 plots as ncols = 2 in one row as nrow = 1
+Also we can do indivualy aas axes[0].plot(x,y) and axes[1].plot(x,y)
+5) now in subplot der is possibility plot might sometime overlap.so to avoid this:
+plt.tight_layout()
+6) Figure size and DPI:
+Now inside plot and subplot we can use figsize as plot(figsize=(8,2))
+Here  is 8 is width and 2 height in inches
+7) Now to save a figure:
+fig.savefig('mypicture.png') ..now here we can use jpg,pdf etc
+8) Now to add legend.we need to add in plot a
+plt.plot(x,y,label='X Suqare')
+plt.legend()
+Also we can also mention location of legend as plt.legend(loc=2) ..0 means best , 1 means left and so on
+And if out of available options our legend doesnt fit in proper location we can manualy do as plt.legend(loc=(0.1,0.1))
+9) To colour,increase line width:
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.plot(x,y,color = 'purple',linewidth=2,alpha=0.5,linestyle='--',marker='o') ..here alpha is also just used for apperance
+linestyle - it just displays style of line .we can use anything .  -  () and so on
+shortcut for linewidth = lw , and linestyle = ls
+marker basically marks all our data point in line
+also we have paramter markersize = 1,2,3 and soon
+marketfacecolour='yellow' ,,, it will change color of marker
+markeredgewidth = 1,2,3, and so on
+markeredgecolor= 'green'
+10) Now by default x and y axis starts from 0 but we want to suppose start from 20 we can write as
+ax.set_xlim([20,22])
+====================Introduction to Seaborn===========
+1) Seaborn is a statistical plotting library and is build on top of Matplotlib
+2) Distribution Plot:
+import seaborn as sns
+%matplotlib inline
+tips = sns.load_dataset('tips') ... here tips is inbuild dataset
+tips.head()
+Below helps us to show the distribution of  univariate set of observations
+sns.distplot(tips['total_bill'])
+now in above if we put kde= False it become histogram and we can increase the bins to see more histogram points for more clear visualisation.like in our eg we can
+see most of the bills happen in between 10 and 20 dollar
+sns.distplot(tips['total_bill'],kde=False,bins=40)
+3) JointPlot:It basically shows relation between 2 variabls also called bivariate
+sns.jointplot(x='total_bill',y='tip',data=tips)
+Now here by default inside it will show scatter plot we can also change to different like by using kind='hex' which is called hexagon distribution reprsentation.
+also kind='reg' which is a linear line all scatter plot, kind=kde and so on.
+4) Pair Plot:
+It basically drawa joint plot between all the numeric cols.Very usefull way to see all the plots in 1 go
+sns.pairplot(tips)
+Now we can use categorical variables in tips which will  help to distinuish on basis of colours.
+sns.pairplot(tips,hue='sex',palette='coolwarm') .. here basically palette is the colour 
+5) Rug Plots:
+Its a simple concept we just draw a dash mark for every single point  along the distribution line.Like distribution plot in roug plot we do on 1 variable
+sns.rugplot(tips['total_bill'])
+6) Categorical Plots:
+Bar Plot:
+sns.barplot(x='sex',y='total_bill',data=tips)
+Here it shows the average total bill.And we found avergae total bill of male is greater then female.
+Now by default is average or mean but we can also put our aggregate function by using parameter estimator='
+sns.barplot(x='sex',y='total_bill',data=tips,estimator=np.std)
+COuntPlot:
+It is similar to bar plot except the estimator is explicitly counting the number of occurences.
+sns.countplot(x='sex',data='tips')
+Box plot:
+sns.boxplot(x='day',y='total_bill',data=tips,hue='smoker')
+So usualy it was saying day by day behaviour for total bills but by adding hue='smoker' it also shows whether or not this person is a smoker
+Dotted line is a smoker
+Violent Plot:
+It plays a very similiar role to box plot.It gives more information but at the same difficult to read and understand
+sns.violinplot(x='day',y='total_bill',data=tips,hue='sex',split=True)
+Strip Plot:
+Its the most simplest plot somewhat similiar to scatter plot
+sns.stripplot(x='day',y='total_bill',data=tips)
+we can use other parameters like hue='sex',jitter=True which gives more points and split = True which splits on basis of male and female
+sns.stripplot(x='day',y='total_bill',data=tips,jitter=True,hue='Sex',split=True)
+Swarm Plot:
+It basically combines the idea of violent and strip plot
+sns.swarmplot(x='day',y='total_bill',data=tips)
+Even though its better then violent and strip plot bus has disadvantages and is not suitable for large data sets.
+Factor plot:
+Its basically general plot where in kind we can put bar, violin and so on
+sns.factorplot(x='day',y='total_bill',data=tips,kind='bar')
+7)Matrix Plot:
+now we will load one more inbuild dataset
+flights = sns.load_dataset('flights')
+Now to generate matrix plot we need data to be in matrix form i.e row name and col name should give some relevant information.Now in our case its not.
+So we will make it by using pivot table or get correlation data.
+so we will try correlation as : tc = tips.corr() and now we see data is in matrix form.
+sns.heatmap(tc)
+we can also use other parameters annot = True prints actual value ,   cmap = 'coolwarm' is used for colour
+Now for flight example we will generate pivot table as:
+fp = flights.pivot_table(index='month',columns='year',values='passengers')
+sns.heatmap(fp)
+other parameters are cmap='magma', linecolor = 'white',linewidths=1
+Cluster Map:
+It is going to use hierarchal clustering to produce a clustered version of this heat map.
+sns.clustermap(fp)
+It basically show months and year which behaviours in similiar way
+8) Regression Plots:
+Linear Model (LM) Plot:
+sns.lmplot(x='total_bill',y='tip',data=tips,hue='sex',markers=['o','v'],scatter_kws={'s':100})
+here o for male and v for female
+Scatter_kws is used to increase size of marker here s stands for size
+Now also instead of using hue and marker we can create seperate plot for sex in same col by  using col paramter as well as row to add one more variable easily
+sns.lmplot(x='total_bill',y='tip',data=tips,col='sex',row='time')
+Again to add more information we can also include hue
+now to increase the size of plot we will include parameter aspect=0.6, size = 8
+9) Grids:
+PairGrid:
+Lets now use iris dataset and generate pair plot
+sns.pairplot(iris) 
+Now we can use Grid to customize and control as
+g = sns.PairGrid(iris)
+g.map(plt.scatter)
+So it will generate scatter plot for all the numeric variables
+Now we can draw differnt plots in same view:
+g.map_diag(sns.distplot)
+g.map_upper(plt.scatter)
+g.map_lower(sns.kdeplot)
+so this will draw upper plot something else , lower something else and diagonal something else
+FacetGrid:
+g = sns.FacetGrid(data=tips,col='time',row='smoker')
+g.map(sns.distplot,'total_bill')
+now if we want to see for 2 variables
+g.map(plt.scatter,'total_bill','tip')
+10) Style and color:
+we can use sns.set_style('whitegrid')
+sns.set.style('ticks')
+For size:
+plt.figure(figsize=(12,3))
+sns.set_context('poster',font_scale=3)
+========================================Pandas Built in Data Visualization ==============
+1)Suppose der are 3 dataframes df1,df2,df3
+2) df1['A'].hist() - it will create histogram
+df1.hist(bins=30)
+other way to do is : df1['A'].plot(kind='hist',bins=30)
+df2.plot.area(alpha=0.4)
+df2.plot.bar(stacked=True)
+df1.plot.line(x=df1.index,y='B',figsize=(12,3))
+so all parameters we use in matlabplot can be used here
+df1.plot.scatter(x='A',y='B',s=df1['c']*100) ...here s shows size
+Now draw  hexagon:
+df.plot.hexbin(x='a',y='b',gridsize=25,cmap='coolwarm')
+df2['A'].plot.density()
+=============Plotly and Cufflinks============
+Plotly is an interactive visualization library.Cufflinks connects plotly with pandas
+pip install plotly and pip install cufflinks
+import pandas as pd
+import numpy as np
+from plotly import__version__
+print(__version__)
+import cufflinks as cf
+from plotly.offline import download_plotlyjs,init_notebook_mode,plot,iplot
+init_notebook_mode(connected=True)
+cf.go_offline()
+#Data
+df = pd.DataFrame(np.random.randn(100,4),columns='A B C D'.split())
+df.head()
+df2 = pd.DataFrame({'Category':['A','B','C'],'Values':[32,43,50]})
+df.iplot()
+so it will  generate a powerful plot where we can download,zoom , see values and so on
+ScatterPlot:
+df.iplot(kind='Scatter',x='A',y='B',mode='markers',size=20)
+BarPlot
+df2.iplot(kind='bar',x='Category',y='Values)
+df.sum().iplot(kind='bar') ..it will give sum of all variables.Similiarly we can use max,min and so on.
+df2.iplot(kind='box')
+3D Surface Plot:
+df3=pd.DataFrame({'x':[1,2,3,4,5],'y':[10,20,30,20,10],'z':[500,400,300,200,100]})
+df3.iplot(kind='surface',colorscale='rdylbu')
+df['A'].iplot(kind='hist',bins=50) or for all cols df.iplot(kind='hist',bins=50)
+df[['A','B']].iplot(kind='spread')
+Bubble Plot"
+Kind of similiar to scatter plot just size of bubble is based on another variable
+df.iplot(kind='bubble',x='A',y='B',size='C')
+Scatter Matrix Plot:
+Similiar to seaborn pair plot.it creates for all numeric cols
+df.scatter_matrix()
+
+
